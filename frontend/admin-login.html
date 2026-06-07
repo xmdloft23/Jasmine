@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Login - Loft XMD Hosting</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gradient-to-br from-gray-900 to-gray-800 text-white min-h-screen flex items-center">
+    <div class="container mx-auto px-4 max-w-md">
+        <div class="bg-gray-800 rounded-2xl p-8 shadow-2xl">
+            <div class="text-center mb-6">
+                <div class="text-5xl mb-3">👑</div>
+                <h2 class="text-3xl font-bold bg-gradient-to-r from-purple-400 to-pink-500 bg-clip-text text-transparent">Admin Login</h2>
+                <p class="text-gray-400 mt-2">Enter admin credentials to continue</p>
+            </div>
+            
+            <form id="adminLoginForm">
+                <div class="mb-4">
+                    <label class="block mb-2">Admin Password</label>
+                    <input type="password" id="password" class="w-full px-4 py-2 rounded-lg bg-gray-700 border border-gray-600 focus:outline-none focus:border-purple-500" placeholder="Enter admin password" required>
+                </div>
+                <button type="submit" class="w-full bg-purple-600 py-2 rounded-lg font-semibold hover:bg-purple-700 transition">Login to Dashboard</button>
+            </form>
+            
+            <p class="text-center mt-4 text-gray-400">
+                <a href="index.html" class="text-purple-400 hover:underline">← Back to Website</a>
+            </p>
+        </div>
+    </div>
+
+    <script>
+        // Admin password (badilisha baadaye kuwa ngumu zaidi)
+        const ADMIN_PASSWORD = 'LoftAdmin2024!';
+        
+        document.getElementById('adminLoginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const password = document.getElementById('password').value;
+            
+            if (password === ADMIN_PASSWORD) {
+                localStorage.setItem('adminAuth', 'true');
+                localStorage.setItem('adminPassword', password);
+                window.location.href = 'admin.html';
+            } else {
+                alert('❌ Invalid admin password!');
+            }
+        });
+    </script>
+</body>
+</html>
