@@ -2,73 +2,620 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
     <title>Dashboard - Loft XMD Hosting</title>
+    <meta name="description" content="Your Loft XMD Hosting dashboard">
+    
+    <!-- Fonts & Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <script src="https://cdn.tailwindcss.com"></script>
-</head>
-<body class="bg-gradient-to-br from-gray-900 to-gray-800 text-white min-h-screen">
-    <nav class="bg-black bg-opacity-50 backdrop-blur-md">
-        <div class="container mx-auto px-6 py-4 flex justify-between items-center">
-            <h1 class="text-2xl font-bold text-purple-400">Loft XMD Hosting</h1>
-            <button onclick="logout()" class="bg-red-600 px-5 py-2 rounded-lg hover:bg-red-700 transition">Logout</button>
-        </div>
-    </nav>
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-    <div class="container mx-auto px-6 py-12">
-        <!-- User Info Card -->
-        <div class="bg-gray-800 rounded-2xl p-8 mb-12">
-            <h2 class="text-3xl font-bold mb-4">Welcome, <span id="username" class="text-purple-400">User</span>!</h2>
-            <div class="grid md:grid-cols-2 gap-4 mt-6">
-                <div class="bg-gray-700 p-4 rounded-lg">
-                    <p class="text-gray-400">Current Plan</p>
-                    <p class="text-2xl font-bold text-purple-400" id="plan">None</p>
-                </div>
-                <div class="bg-gray-700 p-4 rounded-lg">
-                    <p class="text-gray-400">Expiry Date</p>
-                    <p class="text-2xl font-bold" id="expiry">N/A</p>
+        body {
+            background: #000000;
+            font-family: 'Space Grotesk', sans-serif;
+            color: #edf2f8;
+            overflow-x: hidden;
+        }
+
+        /* Custom scrollbar */
+        body::-webkit-scrollbar {
+            width: 4px;
+        }
+        body::-webkit-scrollbar-track {
+            background: #0a0a0a;
+        }
+        body::-webkit-scrollbar-thumb {
+            background: #2dd4bf;
+            border-radius: 20px;
+        }
+
+        /* Glassmorphism */
+        .glass-card {
+            background: rgba(5, 5, 10, 0.65);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(45, 212, 191, 0.2);
+            transition: all 0.3s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+        }
+
+        .glass-card:hover {
+            border-color: rgba(45, 212, 191, 0.5);
+            transform: translateY(-4px);
+            box-shadow: 0 20px 35px -12px rgba(45, 212, 191, 0.15);
+        }
+
+        .glass-card-dark {
+            background: rgba(2, 5, 8, 0.8);
+            backdrop-filter: blur(14px);
+            border: 1px solid rgba(45, 212, 191, 0.15);
+            border-radius: 1.5rem;
+        }
+
+        /* Text gradient */
+        .text-gradient-cyber {
+            background: linear-gradient(125deg, #b9f5f0, #2dd4bf, #5eead4);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        /* Buttons */
+        .btn-primary {
+            background: linear-gradient(105deg, #0b2622, #021010);
+            border: 1px solid #2dd4bf;
+            border-radius: 40px;
+            padding: 10px 20px;
+            font-weight: 600;
+            transition: all 0.2s ease;
+            cursor: pointer;
+        }
+
+        .btn-primary:hover {
+            background: #0c1919;
+            transform: scale(1.02);
+            box-shadow: 0 0 14px rgba(45, 212, 191, 0.4);
+        }
+
+        .btn-danger {
+            background: linear-gradient(105deg, #2c0a0a, #1a0303);
+            border: 1px solid #ef4444;
+            border-radius: 40px;
+            transition: all 0.2s ease;
+        }
+
+        .btn-danger:hover {
+            background: #3a0f0f;
+            box-shadow: 0 0 14px rgba(239, 68, 68, 0.3);
+        }
+
+        /* Plan card */
+        .plan-card {
+            background: rgba(5, 5, 10, 0.7);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(45, 212, 191, 0.2);
+            border-radius: 1.5rem;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .plan-card:hover {
+            transform: translateY(-6px);
+            border-color: #2dd4bf;
+            box-shadow: 0 15px 30px -12px rgba(45, 212, 191, 0.2);
+        }
+
+        .plan-card.popular {
+            border: 2px solid #2dd4bf;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .plan-card.popular::before {
+            content: '🔥 MOST POPULAR';
+            position: absolute;
+            top: 12px;
+            right: -30px;
+            background: linear-gradient(90deg, #2dd4bf, #14b8a6);
+            color: #000;
+            font-size: 0.65rem;
+            font-weight: bold;
+            padding: 4px 35px;
+            transform: rotate(45deg);
+            white-space: nowrap;
+        }
+
+        /* Loading spinner */
+        .loading-spinner {
+            position: fixed;
+            inset: 0;
+            background: #000000dd;
+            backdrop-filter: blur(24px);
+            z-index: 200;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: opacity 0.5s ease, visibility 0.5s;
+            visibility: hidden;
+            opacity: 0;
+        }
+
+        .loading-spinner.active {
+            visibility: visible;
+            opacity: 1;
+        }
+
+        .triple-ring {
+            position: relative;
+            width: 85px;
+            height: 85px;
+        }
+        .triple-ring .ring {
+            position: absolute;
+            border-radius: 50%;
+            border: 2.5px solid transparent;
+            animation: spinQuantum 1.4s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+        }
+        .triple-ring .ring:nth-child(1) {
+            width: 100%;
+            height: 100%;
+            border-top-color: #2dd4bf;
+            animation-duration: 1.2s;
+        }
+        .triple-ring .ring:nth-child(2) {
+            width: 70%;
+            height: 70%;
+            top: 15%;
+            left: 15%;
+            border-top-color: #14b8a6;
+            animation-duration: 1.6s;
+            animation-direction: reverse;
+        }
+        .triple-ring .ring:nth-child(3) {
+            width: 40%;
+            height: 40%;
+            top: 30%;
+            left: 30%;
+            border-top-color: #5eead4;
+            animation-duration: 0.9s;
+        }
+        @keyframes spinQuantum {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Progress bar */
+        .progress-bar {
+            height: 6px;
+            background: rgba(45, 212, 191, 0.2);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #2dd4bf, #5eead4);
+            border-radius: 10px;
+            transition: width 0.5s ease;
+        }
+
+        /* Ambient blobs */
+        .ambient-blob {
+            position: fixed;
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, rgba(45,212,191,0.08), transparent);
+            border-radius: 50%;
+            filter: blur(100px);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* Notification toast */
+        .toast-notification {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: #0b2622;
+            border: 1px solid #2dd4bf;
+            border-radius: 12px;
+            padding: 12px 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            z-index: 150;
+            transform: translateX(400px);
+            transition: transform 0.3s ease;
+        }
+        .toast-notification.show {
+            transform: translateX(0);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .plan-card.popular::before {
+                font-size: 0.5rem;
+                top: 8px;
+                right: -35px;
+                padding: 3px 30px;
+            }
+        }
+    </style>
+</head>
+<body class="bg-black">
+
+    <!-- Ambient blobs -->
+    <div class="ambient-blob -top-40 -left-40"></div>
+    <div class="ambient-blob bottom-0 right-0" style="background: radial-gradient(circle, rgba(20,184,166,0.06), transparent);"></div>
+
+    <!-- Loading Spinner -->
+    <div id="loadingSpinner" class="loading-spinner">
+        <div class="text-center">
+            <div class="flex justify-center mb-6">
+                <div class="triple-ring">
+                    <div class="ring"></div>
+                    <div class="ring"></div>
+                    <div class="ring"></div>
                 </div>
             </div>
+            <h3 class="text-xl font-bold text-gradient-cyber">Loading Dashboard...</h3>
+            <p class="text-gray-400 text-sm mt-2">Please wait</p>
         </div>
+    </div>
 
-        <!-- Upgrade Section -->
-        <h3 class="text-2xl font-bold mb-6">Upgrade Your Plan</h3>
-        <div class="grid md:grid-cols-3 lg:grid-cols-6 gap-4">
-            <div class="bg-gray-800 p-4 rounded-xl text-center"><h4 class="font-bold">10 days</h4><p class="text-purple-400">20 XD</p><button onclick="purchase('10days')" class="bg-purple-600 px-4 py-1 rounded mt-2 text-sm">Buy</button></div>
-            <div class="bg-gray-800 p-4 rounded-xl text-center"><h4 class="font-bold">35 days</h4><p class="text-purple-400">45 XD</p><button onclick="purchase('35days')" class="bg-purple-600 px-4 py-1 rounded mt-2 text-sm">Buy</button></div>
-            <div class="bg-gray-800 p-4 rounded-xl text-center"><h4 class="font-bold">2 months</h4><p class="text-purple-400">100 XD</p><button onclick="purchase('2months')" class="bg-purple-600 px-4 py-1 rounded mt-2 text-sm">Buy</button></div>
-            <div class="bg-gray-800 p-4 rounded-xl text-center"><h4 class="font-bold">3 months</h4><p class="text-purple-400">150 XD</p><button onclick="purchase('3months')" class="bg-purple-600 px-4 py-1 rounded mt-2 text-sm">Buy</button></div>
-            <div class="bg-gray-800 p-4 rounded-xl text-center"><h4 class="font-bold">6 months</h4><p class="text-purple-400">300 XD</p><button onclick="purchase('6months')" class="bg-purple-600 px-4 py-1 rounded mt-2 text-sm">Buy</button></div>
-            <div class="bg-gray-800 p-4 rounded-xl text-center border-2 border-purple-500"><h4 class="font-bold">1 year</h4><p class="text-purple-400">600 XD</p><button onclick="purchase('1year')" class="bg-purple-600 px-4 py-1 rounded mt-2 text-sm">Buy</button></div>
+    <!-- Notification Toast -->
+    <div id="toast" class="toast-notification">
+        <i class="fas fa-check-circle text-teal-400"></i>
+        <span id="toastMessage">Plan activated successfully!</span>
+    </div>
+
+    <!-- Main Content -->
+    <div class="relative z-10">
+        
+        <!-- Navbar -->
+        <nav class="sticky top-0 z-50 bg-black/80 backdrop-blur-xl border-b border-white/5">
+            <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+                <div class="flex items-center gap-3">
+                    <div class="w-9 h-9 rounded-full border border-teal-400 shadow-md flex items-center justify-center bg-black">
+                        <i class="fas fa-crown text-teal-400 text-lg"></i>
+                    </div>
+                    <span class="text-xl font-black text-gradient-cyber tracking-tight">Loft XMD Hosting</span>
+                </div>
+                <div class="flex items-center gap-4">
+                    <div class="hidden md:flex items-center gap-2 bg-teal-500/10 px-4 py-2 rounded-full border border-teal-500/20">
+                        <i class="fas fa-user text-teal-400 text-sm"></i>
+                        <span id="navUsername" class="text-sm font-medium">User</span>
+                    </div>
+                    <button onclick="logout()" class="btn-danger px-5 py-2 rounded-full text-sm flex items-center gap-2">
+                        <i class="fas fa-sign-out-alt"></i> Logout
+                    </button>
+                </div>
+            </div>
+        </nav>
+
+        <div class="container mx-auto px-6 py-8">
+            
+            <!-- Welcome Banner -->
+            <div class="glass-card-dark p-6 mb-8 rounded-2xl">
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                    <div>
+                        <h1 class="text-3xl md:text-4xl font-bold">
+                            Welcome back, <span id="welcomeUsername" class="text-gradient-cyber">User</span>!
+                        </h1>
+                        <p class="text-gray-400 mt-2">Your bot hosting dashboard</p>
+                    </div>
+                    <div class="flex gap-3">
+                        <a href="tutorials.html" class="btn-primary text-sm py-2 px-4 flex items-center gap-2">
+                            <i class="fas fa-video"></i> Tutorials
+                        </a>
+                        <a href="index.html" class="btn-primary text-sm py-2 px-4 flex items-center gap-2" style="background: transparent;">
+                            <i class="fas fa-home"></i> Home
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Stats Cards -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                <div class="glass-card p-6 rounded-2xl">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <p class="text-gray-400 text-sm">Current Plan</p>
+                            <p class="text-2xl font-bold text-teal-400 mt-1" id="plan">None</p>
+                        </div>
+                        <div class="w-12 h-12 rounded-full bg-teal-500/10 flex items-center justify-center border border-teal-500/30">
+                            <i class="fas fa-rocket text-teal-400 text-xl"></i>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="glass-card p-6 rounded-2xl">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <p class="text-gray-400 text-sm">Expiry Date</p>
+                            <p class="text-2xl font-bold mt-1" id="expiry">N/A</p>
+                        </div>
+                        <div class="w-12 h-12 rounded-full bg-teal-500/10 flex items-center justify-center border border-teal-500/30">
+                            <i class="fas fa-calendar-alt text-teal-400 text-xl"></i>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="glass-card p-6 rounded-2xl">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <p class="text-gray-400 text-sm">Days Remaining</p>
+                            <p class="text-2xl font-bold mt-1" id="daysRemaining">0</p>
+                        </div>
+                        <div class="w-12 h-12 rounded-full bg-teal-500/10 flex items-center justify-center border border-teal-500/30">
+                            <i class="fas fa-hourglass-half text-teal-400 text-xl"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Plan Progress (if active) -->
+            <div id="planProgress" class="glass-card-dark p-6 mb-8 rounded-2xl hidden">
+                <div class="flex justify-between items-center mb-3">
+                    <h3 class="font-bold">Plan Progress</h3>
+                    <span id="progressPercent" class="text-teal-400 text-sm">0%</span>
+                </div>
+                <div class="progress-bar">
+                    <div id="progressFill" class="progress-fill" style="width: 0%"></div>
+                </div>
+                <p class="text-gray-500 text-xs mt-3" id="progressText">Your plan is active</p>
+            </div>
+
+            <!-- Upgrade Section -->
+            <div class="mb-8">
+                <div class="flex justify-between items-center mb-6">
+                    <h2 class="text-2xl font-bold text-gradient-cyber">Upgrade Your Plan</h2>
+                    <p class="text-gray-400 text-sm">Choose the perfect plan for your needs</p>
+                </div>
+                
+                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+                    
+                    <!-- 10 days -->
+                    <div class="plan-card p-5 text-center" onclick="showPurchaseModal('10days', 20)">
+                        <div class="text-3xl mb-3"><i class="fas fa-bolt text-teal-400"></i></div>
+                        <h4 class="font-bold text-lg">Starter</h4>
+                        <p class="text-gray-400 text-xs mb-2">10 days</p>
+                        <p class="text-2xl font-bold text-teal-400">20 XD</p>
+                        <button class="btn-primary w-full mt-3 py-2 text-sm">Select Plan</button>
+                    </div>
+                    
+                    <!-- 35 days -->
+                    <div class="plan-card p-5 text-center" onclick="showPurchaseModal('35days', 45)">
+                        <div class="text-3xl mb-3"><i class="fas fa-fire text-teal-400"></i></div>
+                        <h4 class="font-bold text-lg">Basic</h4>
+                        <p class="text-gray-400 text-xs mb-2">35 days</p>
+                        <p class="text-2xl font-bold text-teal-400">45 XD</p>
+                        <button class="btn-primary w-full mt-3 py-2 text-sm">Select Plan</button>
+                    </div>
+                    
+                    <!-- 2 months -->
+                    <div class="plan-card p-5 text-center" onclick="showPurchaseModal('2months', 100)">
+                        <div class="text-3xl mb-3"><i class="fas fa-rocket text-teal-400"></i></div>
+                        <h4 class="font-bold text-lg">Pro</h4>
+                        <p class="text-gray-400 text-xs mb-2">2 months</p>
+                        <p class="text-2xl font-bold text-teal-400">100 XD</p>
+                        <button class="btn-primary w-full mt-3 py-2 text-sm">Select Plan</button>
+                    </div>
+                    
+                    <!-- 3 months - Popular -->
+                    <div class="plan-card popular p-5 text-center" onclick="showPurchaseModal('3months', 150)">
+                        <div class="text-3xl mb-3"><i class="fas fa-gem text-teal-400"></i></div>
+                        <h4 class="font-bold text-lg">Business</h4>
+                        <p class="text-gray-400 text-xs mb-2">3 months</p>
+                        <p class="text-2xl font-bold text-teal-400">150 XD</p>
+                        <button class="btn-primary w-full mt-3 py-2 text-sm">Select Plan</button>
+                    </div>
+                    
+                    <!-- 6 months -->
+                    <div class="plan-card p-5 text-center" onclick="showPurchaseModal('6months', 300)">
+                        <div class="text-3xl mb-3"><i class="fas fa-crown text-teal-400"></i></div>
+                        <h4 class="font-bold text-lg">Enterprise</h4>
+                        <p class="text-gray-400 text-xs mb-2">6 months</p>
+                        <p class="text-2xl font-bold text-teal-400">300 XD</p>
+                        <button class="btn-primary w-full mt-3 py-2 text-sm">Select Plan</button>
+                    </div>
+                    
+                    <!-- 1 year -->
+                    <div class="plan-card p-5 text-center" onclick="showPurchaseModal('1year', 600)">
+                        <div class="text-3xl mb-3"><i class="fas fa-infinity text-teal-400"></i></div>
+                        <h4 class="font-bold text-lg">Ultimate</h4>
+                        <p class="text-gray-400 text-xs mb-2">1 year</p>
+                        <p class="text-2xl font-bold text-teal-400">600 XD</p>
+                        <button class="btn-primary w-full mt-3 py-2 text-sm">Select Plan</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Purchase Modal -->
+            <div id="purchaseModal" class="fixed inset-0 bg-black/80 backdrop-blur-md flex items-center justify-center z-50 hidden">
+                <div class="glass-card p-6 max-w-md w-full mx-4 rounded-2xl">
+                    <div class="text-center mb-4">
+                        <div class="w-16 h-16 rounded-full bg-teal-500/20 flex items-center justify-center mx-auto border border-teal-400">
+                            <i class="fas fa-shopping-cart text-2xl text-teal-400"></i>
+                        </div>
+                        <h3 class="text-xl font-bold mt-3">Confirm Purchase</h3>
+                    </div>
+                    <div class="space-y-3 mb-6">
+                        <div class="flex justify-between py-2 border-b border-gray-700">
+                            <span>Plan:</span>
+                            <span id="modalPlan" class="font-bold text-teal-400">Starter</span>
+                        </div>
+                        <div class="flex justify-between py-2 border-b border-gray-700">
+                            <span>Price:</span>
+                            <span id="modalPrice" class="font-bold text-teal-400">20 XD</span>
+                        </div>
+                        <div class="flex justify-between py-2">
+                            <span>Payment Method:</span>
+                            <span class="flex gap-2">
+                                <button id="paypalMethod" class="px-3 py-1 rounded-full text-xs bg-teal-500/20 border border-teal-400">PayPal</button>
+                                <button id="mpesaMethod" class="px-3 py-1 rounded-full text-xs bg-gray-700 border border-gray-600">M-Pesa</button>
+                            </span>
+                        </div>
+                    </div>
+                    <div class="flex gap-3">
+                        <button onclick="closeModal()" class="flex-1 btn-primary py-2" style="background: transparent; border-color: #ef4444;">Cancel</button>
+                        <button id="confirmPurchaseBtn" class="flex-1 btn-primary py-2">Confirm Purchase</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Support Section -->
+            <div class="glass-card-dark p-6 rounded-2xl mt-8">
+                <div class="flex flex-col md:flex-row justify-between items-center gap-4">
+                    <div>
+                        <h3 class="font-bold text-lg">Need Help? <i class="fas fa-headset text-teal-400"></i></h3>
+                        <p class="text-gray-400 text-sm">Our support team is available 24/7</p>
+                    </div>
+                    <div class="flex gap-3">
+                        <a href="tutorials.html" class="btn-primary text-sm py-2 px-4 flex items-center gap-2">
+                            <i class="fas fa-video"></i> Watch Tutorials
+                        </a>
+                        <a href="#" class="btn-primary text-sm py-2 px-4 flex items-center gap-2" style="background: transparent;">
+                            <i class="fab fa-telegram"></i> Telegram Support
+                        </a>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
     <script>
         const API_URL = 'https://jasmine-ebjp.onrender.com/api';
         const token = localStorage.getItem('token');
-        
+        let selectedPlan = null;
+        let selectedPrice = null;
+
         if (!token) {
             window.location.href = 'login.html';
         }
-        
+
+        function showLoading(show) {
+            const spinner = document.getElementById('loadingSpinner');
+            if (show) {
+                spinner.classList.add('active');
+            } else {
+                spinner.classList.remove('active');
+            }
+        }
+
+        function showToast(message, isError = false) {
+            const toast = document.getElementById('toast');
+            const toastMessage = document.getElementById('toastMessage');
+            toastMessage.innerHTML = message;
+            toast.classList.add('show');
+            if (isError) {
+                toast.style.borderColor = '#ef4444';
+                toastMessage.style.color = '#f87171';
+            } else {
+                toast.style.borderColor = '#2dd4bf';
+                toastMessage.style.color = '#2dd4bf';
+            }
+            setTimeout(() => {
+                toast.classList.remove('show');
+                setTimeout(() => {
+                    toast.style.borderColor = '#2dd4bf';
+                }, 300);
+            }, 3000);
+        }
+
         async function loadDashboard() {
+            showLoading(true);
             try {
                 const response = await fetch(`${API_URL}/plans/dashboard`, {
                     headers: { 'Authorization': `Bearer ${token}` }
                 });
                 const data = await response.json();
                 if (data.success) {
-                    document.getElementById('username').innerText = data.user.username;
+                    const username = data.user.username;
+                    document.getElementById('username').innerText = username;
+                    document.getElementById('welcomeUsername').innerText = username;
+                    document.getElementById('navUsername').innerText = username;
                     document.getElementById('plan').innerText = data.user.plan || 'None';
-                    document.getElementById('expiry').innerText = data.user.planExpiry ? new Date(data.user.planExpiry).toLocaleDateString() : 'No active plan';
+                    
+                    const expiryDate = data.user.planExpiry ? new Date(data.user.planExpiry) : null;
+                    if (expiryDate && expiryDate > new Date()) {
+                        document.getElementById('expiry').innerText = expiryDate.toLocaleDateString();
+                        const daysRemaining = Math.ceil((expiryDate - new Date()) / (1000 * 60 * 60 * 24));
+                        document.getElementById('daysRemaining').innerText = daysRemaining;
+                        
+                        // Show progress bar
+                        document.getElementById('planProgress').classList.remove('hidden');
+                        const totalDays = getPlanDays(data.user.plan);
+                        if (totalDays > 0) {
+                            const percentUsed = ((totalDays - daysRemaining) / totalDays) * 100;
+                            const percentRemaining = 100 - percentUsed;
+                            document.getElementById('progressFill').style.width = `${percentRemaining}%`;
+                            document.getElementById('progressPercent').innerText = `${Math.round(percentRemaining)}%`;
+                            document.getElementById('progressText').innerHTML = `<i class="fas fa-hourglass-half"></i> ${daysRemaining} days remaining on your ${data.user.plan} plan`;
+                        }
+                    } else {
+                        document.getElementById('expiry').innerText = 'No active plan';
+                        document.getElementById('daysRemaining').innerText = '0';
+                        document.getElementById('planProgress').classList.add('hidden');
+                    }
                 } else {
                     logout();
                 }
             } catch (error) {
                 console.error('Error:', error);
+                showToast('Failed to load dashboard', true);
+            } finally {
+                showLoading(false);
             }
         }
-        
-        async function purchase(plan) {
+
+        function getPlanDays(plan) {
+            const plans = {
+                '10days': 10,
+                '35days': 35,
+                '2months': 60,
+                '3months': 90,
+                '6months': 180,
+                '1year': 365
+            };
+            return plans[plan] || 0;
+        }
+
+        function showPurchaseModal(plan, price) {
+            selectedPlan = plan;
+            selectedPrice = price;
+            
+            const planNames = {
+                '10days': 'Starter (10 days)',
+                '35days': 'Basic (35 days)',
+                '2months': 'Pro (2 months)',
+                '3months': 'Business (3 months)',
+                '6months': 'Enterprise (6 months)',
+                '1year': 'Ultimate (1 year)'
+            };
+            
+            document.getElementById('modalPlan').innerText = planNames[plan];
+            document.getElementById('modalPrice').innerText = price + ' XD';
+            document.getElementById('purchaseModal').classList.remove('hidden');
+        }
+
+        function closeModal() {
+            document.getElementById('purchaseModal').classList.add('hidden');
+            selectedPlan = null;
+            selectedPrice = null;
+        }
+
+        async function purchase() {
+            if (!selectedPlan) return;
+            
+            closeModal();
+            showLoading(true);
+            
             try {
                 const response = await fetch(`${API_URL}/plans/purchase`, {
                     method: 'POST',
@@ -76,23 +623,45 @@
                         'Content-Type': 'application/json',
                         'Authorization': `Bearer ${token}`
                     },
-                    body: JSON.stringify({ plan })
+                    body: JSON.stringify({ plan: selectedPlan })
                 });
                 const data = await response.json();
-                alert(data.message);
                 if (data.success) {
+                    showToast('✅ ' + data.message);
                     loadDashboard();
+                } else {
+                    showToast('❌ ' + data.message, true);
                 }
             } catch (error) {
-                alert('Purchase failed: ' + error.message);
+                showToast('Purchase failed: ' + error.message, true);
+            } finally {
+                showLoading(false);
+                selectedPlan = null;
             }
         }
-        
+
         function logout() {
             localStorage.clear();
             window.location.href = 'index.html';
         }
+
+        document.getElementById('confirmPurchaseBtn').addEventListener('click', purchase);
         
+        // Payment method selection
+        document.getElementById('paypalMethod').addEventListener('click', () => {
+            document.getElementById('paypalMethod').classList.add('bg-teal-500/20', 'border-teal-400');
+            document.getElementById('mpesaMethod').classList.remove('bg-teal-500/20', 'border-teal-400');
+            document.getElementById('mpesaMethod').classList.add('bg-gray-700', 'border-gray-600');
+            showToast('PayPal selected. Click Confirm to proceed.', false);
+        });
+        
+        document.getElementById('mpesaMethod').addEventListener('click', () => {
+            document.getElementById('mpesaMethod').classList.add('bg-teal-500/20', 'border-teal-400');
+            document.getElementById('paypalMethod').classList.remove('bg-teal-500/20', 'border-teal-400');
+            document.getElementById('paypalMethod').classList.add('bg-gray-700', 'border-gray-600');
+            showToast('M-Pesa selected. Click Confirm to proceed.', false);
+        });
+
         loadDashboard();
     </script>
 </body>
