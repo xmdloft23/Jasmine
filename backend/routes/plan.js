@@ -1,6 +1,6 @@
 const express = require('express');
-const User = require('../models/User');
-const auth = require('../middleware/auth');
+const User = require('../models/User.js');
+const auth = require('../middleware/auth.js');
 const router = express.Router();
 
 // Get user dashboard data
