@@ -2,36 +2,357 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
     <title>Login - Loft XMD Hosting</title>
+    <meta name="description" content="Login to Loft XMD Hosting - Premium WhatsApp bot hosting">
+    
+    <!-- Fonts & Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <script src="https://cdn.tailwindcss.com"></script>
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #000000;
+            font-family: 'Space Grotesk', sans-serif;
+            color: #edf2f8;
+            overflow-x: hidden;
+        }
+
+        /* Background - Black Quantum */
+        .bg-radial-dark {
+            background: radial-gradient(circle at 20% 30%, #050505, #000000);
+        }
+
+        /* Glassmorphism 2.0 - Teal/Cyan theme */
+        .glass-card {
+            background: rgba(5, 5, 10, 0.75);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            border: 1px solid rgba(45, 212, 191, 0.2);
+            border-radius: 2rem;
+            transition: all 0.3s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+        }
+
+        .glass-card:hover {
+            border-color: rgba(45, 212, 191, 0.5);
+            box-shadow: 0 20px 35px -12px rgba(45, 212, 191, 0.15);
+        }
+
+        /* Text gradient - Teal/Cyan */
+        .text-gradient-cyber {
+            background: linear-gradient(125deg, #b9f5f0, #2dd4bf, #5eead4);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        /* Buttons */
+        .btn-primary {
+            background: linear-gradient(105deg, #0b2622, #021010);
+            border: 1px solid #2dd4bf;
+            border-radius: 40px;
+            padding: 12px 24px;
+            font-weight: 600;
+            transition: all 0.2s ease;
+            cursor: pointer;
+        }
+
+        .btn-primary:hover {
+            background: #0c1919;
+            transform: scale(1.02);
+            box-shadow: 0 0 14px rgba(45, 212, 191, 0.4);
+        }
+
+        .btn-primary:active {
+            transform: scale(0.98);
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 1.5px solid rgba(45, 212, 191, 0.5);
+            border-radius: 40px;
+            padding: 12px 24px;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            cursor: pointer;
+        }
+
+        .btn-outline:hover {
+            border-color: #2dd4bf;
+            background: rgba(45, 212, 191, 0.1);
+            transform: scale(1.02);
+        }
+
+        /* Input fields */
+        .input-dark {
+            background: #030405;
+            border: 1px solid #2c3e3a;
+            border-radius: 60px;
+            padding: 14px 20px;
+            color: #e2e8f0;
+            font-size: 0.9rem;
+            transition: 0.2s;
+            width: 100%;
+        }
+
+        .input-dark:focus {
+            outline: none;
+            border-color: #2dd4bf;
+            box-shadow: 0 0 0 3px rgba(45, 212, 191, 0.25);
+        }
+
+        /* 3-CIRCLE LOADING (Quantum Rings) */
+        .loading-spinner {
+            position: fixed;
+            inset: 0;
+            background: #000000dd;
+            backdrop-filter: blur(24px);
+            z-index: 200;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: opacity 0.5s ease, visibility 0.5s;
+            visibility: hidden;
+            opacity: 0;
+        }
+
+        .loading-spinner.active {
+            visibility: visible;
+            opacity: 1;
+        }
+
+        .triple-ring {
+            position: relative;
+            width: 85px;
+            height: 85px;
+        }
+        .triple-ring .ring {
+            position: absolute;
+            border-radius: 50%;
+            border: 2.5px solid transparent;
+            animation: spinQuantum 1.4s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+        }
+        .triple-ring .ring:nth-child(1) {
+            width: 100%;
+            height: 100%;
+            border-top-color: #2dd4bf;
+            animation-duration: 1.2s;
+        }
+        .triple-ring .ring:nth-child(2) {
+            width: 70%;
+            height: 70%;
+            top: 15%;
+            left: 15%;
+            border-top-color: #14b8a6;
+            animation-duration: 1.6s;
+            animation-direction: reverse;
+        }
+        .triple-ring .ring:nth-child(3) {
+            width: 40%;
+            height: 40%;
+            top: 30%;
+            left: 30%;
+            border-top-color: #5eead4;
+            animation-duration: 0.9s;
+        }
+        @keyframes spinQuantum {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Divider */
+        .divider {
+            display: flex;
+            align-items: center;
+            text-align: center;
+            color: #4a5568;
+            font-size: 0.75rem;
+        }
+        .divider::before,
+        .divider::after {
+            content: '';
+            flex: 1;
+            border-bottom: 1px solid rgba(45, 212, 191, 0.2);
+        }
+        .divider::before {
+            margin-right: 1rem;
+        }
+        .divider::after {
+            margin-left: 1rem;
+        }
+
+        /* Ambient blobs */
+        .ambient-blob {
+            position: fixed;
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, rgba(45,212,191,0.12), transparent);
+            border-radius: 50%;
+            filter: blur(100px);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .error-message {
+            background: rgba(220, 38, 38, 0.1);
+            border: 1px solid rgba(220, 38, 38, 0.3);
+            border-radius: 12px;
+            padding: 10px;
+            font-size: 0.8rem;
+            color: #f87171;
+            text-align: center;
+        }
+    </style>
 </head>
-<body class="bg-gradient-to-br from-gray-900 to-gray-800 text-white min-h-screen flex items-center">
-    <div class="container mx-auto px-6 max-w-md">
-        <div class="bg-gray-800 rounded-2xl p-8 shadow-2xl">
-            <h2 class="text-3xl font-bold text-center mb-6 bg-gradient-to-r from-purple-400 to-pink-500 bg-clip-text text-transparent">Welcome Back</h2>
-            <form id="loginForm">
-                <div class="mb-4">
-                    <label class="block mb-2">Email Address</label>
-                    <input type="email" id="email" class="w-full px-4 py-2 rounded-lg bg-gray-700 border border-gray-600 focus:outline-none focus:border-purple-500" required>
+<body class="bg-black">
+
+    <!-- Ambient blobs -->
+    <div class="ambient-blob -top-40 -left-40"></div>
+    <div class="ambient-blob bottom-0 right-0" style="background: radial-gradient(circle, rgba(20,184,166,0.1), transparent);"></div>
+
+    <!-- Loading Spinner -->
+    <div id="loadingSpinner" class="loading-spinner">
+        <div class="text-center">
+            <div class="flex justify-center mb-6">
+                <div class="triple-ring">
+                    <div class="ring"></div>
+                    <div class="ring"></div>
+                    <div class="ring"></div>
                 </div>
-                <div class="mb-6">
-                    <label class="block mb-2">Password</label>
-                    <input type="password" id="password" class="w-full px-4 py-2 rounded-lg bg-gray-700 border border-gray-600 focus:outline-none focus:border-purple-500" required>
+            </div>
+            <h3 class="text-xl font-bold text-gradient-cyber">Authenticating...</h3>
+            <p class="text-gray-400 text-sm mt-2">Please wait</p>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="min-h-screen flex items-center justify-center px-5 py-12 relative z-10">
+        <div class="container mx-auto max-w-md">
+            
+            <!-- Logo/Brand -->
+            <div class="text-center mb-6">
+                <div class="w-16 h-16 rounded-full border-2 border-teal-400 flex items-center justify-center mx-auto mb-3 bg-black/50">
+                    <i class="fas fa-crown text-2xl text-teal-400"></i>
                 </div>
-                <button type="submit" class="w-full bg-purple-600 py-2 rounded-lg font-semibold hover:bg-purple-700 transition">Login</button>
-            </form>
-            <p class="text-center mt-4 text-gray-400">Don't have an account? <a href="register.html" class="text-purple-400 hover:underline">Register</a></p>
+                <h2 class="text-2xl font-bold text-gradient-cyber">Loft XMD Hosting</h2>
+                <p class="text-gray-400 text-sm mt-1">Sign in to your account</p>
+            </div>
+
+            <!-- Login Card -->
+            <div class="glass-card p-6 md:p-8">
+                
+                <!-- Error Message Display -->
+                <div id="errorMessage" class="error-message hidden mb-4">
+                    <i class="fas fa-exclamation-triangle mr-2"></i>
+                    <span id="errorText">Login failed</span>
+                </div>
+
+                <!-- Login Form -->
+                <form id="loginForm">
+                    <div class="mb-4">
+                        <label class="block mb-2 text-sm font-medium text-gray-300">Email Address</label>
+                        <div class="relative">
+                            <i class="fas fa-envelope absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-500 text-sm"></i>
+                            <input type="email" id="email" class="input-dark pl-11" placeholder="you@example.com" required>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-6">
+                        <label class="block mb-2 text-sm font-medium text-gray-300">Password</label>
+                        <div class="relative">
+                            <i class="fas fa-lock absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-500 text-sm"></i>
+                            <input type="password" id="password" class="input-dark pl-11" placeholder="Enter your password" required>
+                        </div>
+                    </div>
+                    
+                    <button type="submit" class="btn-primary w-full py-3 text-white font-semibold flex items-center justify-center gap-2">
+                        <i class="fas fa-sign-in-alt"></i> Sign In
+                    </button>
+                </form>
+
+                <!-- Forgot Password Link -->
+                <div class="text-right mt-3">
+                    <a href="#" class="text-xs text-gray-500 hover:text-teal-400 transition">Forgot password?</a>
+                </div>
+
+                <!-- Divider -->
+                <div class="divider my-6">
+                    <span class="px-2 text-gray-500 text-xs">OR CONTINUE WITH</span>
+                </div>
+
+                <!-- Social Login Buttons -->
+                <div class="space-y-3">
+                    <!-- Google Button -->
+                    <button id="googleLoginBtn" class="btn-outline w-full py-3 flex items-center justify-center gap-3">
+                        <i class="fab fa-google text-lg text-red-400"></i>
+                        <span class="font-medium">Continue with Google</span>
+                    </button>
+
+                    <!-- GitHub Button -->
+                    <button id="githubLoginBtn" class="btn-outline w-full py-3 flex items-center justify-center gap-3">
+                        <i class="fab fa-github text-lg text-gray-300"></i>
+                        <span class="font-medium">Continue with GitHub</span>
+                    </button>
+                </div>
+
+                <!-- Register Link -->
+                <p class="text-center mt-6 text-gray-400 text-sm">
+                    Don't have an account? 
+                    <a href="register.html" class="text-teal-400 hover:text-teal-300 font-medium hover:underline">Create account</a>
+                </p>
+            </div>
+
+            <!-- Back to Home -->
+            <div class="text-center mt-6">
+                <a href="index.html" class="text-gray-500 text-sm hover:text-teal-400 transition">
+                    <i class="fas fa-arrow-left mr-1"></i> Back to Home
+                </a>
+            </div>
         </div>
     </div>
 
     <script>
         const API_URL = 'https://jasmine-ebjp.onrender.com/api';
-        
-        document.getElementById('loginForm').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const email = document.getElementById('email').value;
-            const password = document.getElementById('password').value;
+
+        // Show/hide loading spinner
+        function showLoading(show) {
+            const spinner = document.getElementById('loadingSpinner');
+            if (show) {
+                spinner.classList.add('active');
+            } else {
+                spinner.classList.remove('active');
+            }
+        }
+
+        // Show error message
+        function showError(message) {
+            const errorDiv = document.getElementById('errorMessage');
+            const errorText = document.getElementById('errorText');
+            errorText.innerText = message;
+            errorDiv.classList.remove('hidden');
+            
+            // Auto hide after 5 seconds
+            setTimeout(() => {
+                errorDiv.classList.add('hidden');
+            }, 5000);
+        }
+
+        // Hide error
+        function hideError() {
+            document.getElementById('errorMessage').classList.add('hidden');
+        }
+
+        // Login function
+        async function loginUser(email, password) {
+            hideError();
+            showLoading(true);
             
             try {
                 const response = await fetch(`${API_URL}/auth/login`, {
@@ -39,19 +360,100 @@
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ email, password })
                 });
-                
+
                 const data = await response.json();
+                
                 if (data.success) {
                     localStorage.setItem('token', data.token);
                     localStorage.setItem('user', JSON.stringify(data.user));
-                    window.location.href = 'dashboard.html';
+                    
+                    // Check if user has selected a plan before login
+                    const selectedPlan = localStorage.getItem('selectedPlan');
+                    if (selectedPlan) {
+                        window.location.href = 'checkout.html';
+                    } else {
+                        window.location.href = 'dashboard.html';
+                    }
                 } else {
-                    alert('Login failed: ' + data.message);
+                    showError(data.message || 'Invalid email or password');
                 }
             } catch (error) {
-                alert('Connection error. Make sure backend is running.');
+                console.error('Login error:', error);
+                showError('Connection error. Please check your internet and try again.');
+            } finally {
+                showLoading(false);
+            }
+        }
+
+        // Form submission
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            
+            if (!email || !password) {
+                showError('Please fill in all fields');
+                return;
+            }
+            
+            await loginUser(email, password);
+        });
+
+        // Google Login (Demo - will redirect to Google OAuth)
+        document.getElementById('googleLoginBtn').addEventListener('click', () => {
+            showLoading(true);
+            // Simulate Google OAuth redirect
+            setTimeout(() => {
+                showLoading(false);
+                alert('Google Sign-In is coming soon! This feature will be available in the next update.\n\nFor now, please use email/password to login.');
+            }, 1000);
+            
+            // Actual Google OAuth would be:
+            // window.location.href = `${API_URL}/auth/google`;
+        });
+
+        // GitHub Login (Demo - will redirect to GitHub OAuth)
+        document.getElementById('githubLoginBtn').addEventListener('click', () => {
+            showLoading(true);
+            // Simulate GitHub OAuth redirect
+            setTimeout(() => {
+                showLoading(false);
+                alert('GitHub Sign-In is coming soon! This feature will be available in the next update.\n\nFor now, please use email/password to login.');
+            }, 1000);
+            
+            // Actual GitHub OAuth would be:
+            // window.location.href = `${API_URL}/auth/github`;
+        });
+
+        // Enter key submit
+        document.getElementById('password').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                document.getElementById('loginForm').dispatchEvent(new Event('submit'));
             }
         });
+
+        // Check if user is already logged in
+        const token = localStorage.getItem('token');
+        if (token) {
+            // Verify token is still valid
+            fetch(`${API_URL}/plans/dashboard`, {
+                headers: { 'Authorization': `Bearer ${token}` }
+            }).then(res => res.json()).then(data => {
+                if (data.success) {
+                    // User is already logged in, redirect to appropriate page
+                    const selectedPlan = localStorage.getItem('selectedPlan');
+                    if (selectedPlan) {
+                        window.location.href = 'checkout.html';
+                    } else {
+                        window.location.href = 'dashboard.html';
+                    }
+                }
+            }).catch(() => {
+                // Token invalid, clear it
+                localStorage.removeItem('token');
+                localStorage.removeItem('user');
+            });
+        }
     </script>
 </body>
 </html>
