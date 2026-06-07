@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Loft XMD Hosting</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gradient-to-br from-gray-900 to-gray-800 text-white min-h-screen">
+    <nav class="bg-black bg-opacity-50 backdrop-blur-md">
+        <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <h1 class="text-2xl font-bold text-purple-400">Loft XMD Hosting</h1>
+            <button onclick="logout()" class="bg-red-600 px-5 py-2 rounded-lg hover:bg-red-700 transition">Logout</button>
+        </div>
+    </nav>
+
+    <div class="container mx-auto px-6 py-12">
+        <!-- User Info Card -->
+        <div class="bg-gray-800 rounded-2xl p-8 mb-12">
+            <h2 class="text-3xl font-bold mb-4">Welcome, <span id="username" class="text-purple-400">User</span>!</h2>
+            <div class="grid md:grid-cols-2 gap-4 mt-6">
+                <div class="bg-gray-700 p-4 rounded-lg">
+                    <p class="text-gray-400">Current Plan</p>
+                    <p class="text-2xl font-bold text-purple-400" id="plan">None</p>
+                </div>
+                <div class="bg-gray-700 p-4 rounded-lg">
+                    <p class="text-gray-400">Expiry Date</p>
+                    <p class="text-2xl font-bold" id="expiry">N/A</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Upgrade Section -->
+        <h3 class="text-2xl font-bold mb-6">Upgrade Your Plan</h3>
+        <div class="grid md:grid-cols-3 lg:grid-cols-6 gap-4">
+            <div class="bg-gray-800 p-4 rounded-xl text-center"><h4 class="font-bold">10 days</h4><p class="text-purple-400">20 XD</p><button onclick="purchase('10days')" class="bg-purple-600 px-4 py-1 rounded mt-2 text-sm">Buy</button></div>
+            <div class="bg-gray-800 p-4 rounded-xl text-center"><h4 class="font-bold">35 days</h4><p class="text-purple-400">45 XD</p><button onclick="purchase('35days')" class="bg-purple-600 px-4 py-1 rounded mt-2 text-sm">Buy</button></div>
+            <div class="bg-gray-800 p-4 rounded-xl text-center"><h4 class="font-bold">2 months</h4><p class="text-purple-400">100 XD</p><button onclick="purchase('2months')" class="bg-purple-600 px-4 py-1 rounded mt-2 text-sm">Buy</button></div>
+            <div class="bg-gray-800 p-4 rounded-xl text-center"><h4 class="font-bold">3 months</h4><p class="text-purple-400">150 XD</p><button onclick="purchase('3months')" class="bg-purple-600 px-4 py-1 rounded mt-2 text-sm">Buy</button></div>
+            <div class="bg-gray-800 p-4 rounded-xl text-center"><h4 class="font-bold">6 months</h4><p class="text-purple-400">300 XD</p><button onclick="purchase('6months')" class="bg-purple-600 px-4 py-1 rounded mt-2 text-sm">Buy</button></div>
+            <div class="bg-gray-800 p-4 rounded-xl text-center border-2 border-purple-500"><h4 class="font-bold">1 year</h4><p class="text-purple-400">600 XD</p><button onclick="purchase('1year')" class="bg-purple-600 px-4 py-1 rounded mt-2 text-sm">Buy</button></div>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = 'http://localhost:5000/api';
+        const token = localStorage.getItem('token');
+        
+        if (!token) {
+            window.location.href = 'login.html';
+        }
+        
+        async function loadDashboard() {
+            try {
+                const response = await fetch(`${API_URL}/plans/dashboard`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                const data = await response.json();
+                if (data.success) {
+                    document.getElementById('username').innerText = data.user.username;
+                    document.getElementById('plan').innerText = data.user.plan || 'None';
+                    document.getElementById('expiry').innerText = data.user.planExpiry ? new Date(data.user.planExpiry).toLocaleDateString() : 'No active plan';
+                } else {
+                    logout();
+                }
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        }
+        
+        async function purchase(plan) {
+            try {
+                const response = await fetch(`${API_URL}/plans/purchase`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({ plan })
+                });
+                const data = await response.json();
+                alert(data.message);
+                if (data.success) {
+                    loadDashboard();
+                }
+            } catch (error) {
+                alert('Purchase failed: ' + error.message);
+            }
+        }
+        
+        function logout() {
+            localStorage.clear();
+            window.location.href = 'index.html';
+        }
+        
+        loadDashboard();
+    </script>
+</body>
+</html>
