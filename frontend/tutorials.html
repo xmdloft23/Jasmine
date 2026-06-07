@@ -2,58 +2,611 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
     <title>Tutorials - Loft XMD Hosting</title>
+    <meta name="description" content="Learn how to deploy and manage your WhatsApp bot with Loft XMD Hosting">
+    
+    <!-- Fonts & Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <script src="https://cdn.tailwindcss.com"></script>
-</head>
-<body class="bg-gradient-to-br from-gray-900 to-gray-800 text-white min-h-screen">
-    <nav class="bg-black bg-opacity-50 backdrop-blur-md fixed w-full z-50">
-        <div class="container mx-auto px-6 py-4 flex justify-between items-center">
-            <h1 class="text-2xl font-bold bg-gradient-to-r from-purple-400 to-pink-500 bg-clip-text text-transparent">Loft XMD Hosting</h1>
-            <div class="space-x-6">
-                <a href="index.html" class="hover:text-purple-400 transition">Home</a>
-                <a href="tutorials.html" class="text-purple-400 transition">Tutorials</a>
-                <a href="login.html" class="bg-purple-600 px-5 py-2 rounded-lg hover:bg-purple-700 transition">Login</a>
-            </div>
-        </div>
-    </nav>
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-    <div class="container mx-auto px-6 pt-32 pb-16">
-        <h2 class="text-4xl font-bold text-center mb-4">Video Tutorials</h2>
-        <p class="text-center text-gray-400 mb-12">Step-by-step guides to deploy and manage your bots</p>
-        
-        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            <div class="bg-gray-800 rounded-xl p-6 hover:scale-105 transition-transform">
-                <div class="text-purple-400 text-4xl mb-3">📺</div>
-                <h3 class="text-xl font-bold mb-2">How to Deploy BMW XMD Bot</h3>
-                <a href="#" class="text-purple-400 hover:underline">Watch on YouTube →</a>
+        body {
+            background: #000000;
+            font-family: 'Space Grotesk', sans-serif;
+            color: #edf2f8;
+            overflow-x: hidden;
+        }
+
+        /* Custom scrollbar */
+        body::-webkit-scrollbar {
+            width: 4px;
+        }
+        body::-webkit-scrollbar-track {
+            background: #0a0a0a;
+        }
+        body::-webkit-scrollbar-thumb {
+            background: #2dd4bf;
+            border-radius: 20px;
+        }
+
+        /* Glassmorphism */
+        .glass-card {
+            background: rgba(5, 5, 10, 0.65);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(45, 212, 191, 0.2);
+            transition: all 0.3s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+        }
+
+        .glass-card:hover {
+            border-color: rgba(45, 212, 191, 0.5);
+            transform: translateY(-6px);
+            box-shadow: 0 20px 35px -12px rgba(45, 212, 191, 0.15);
+        }
+
+        .glass-card-dark {
+            background: rgba(2, 5, 8, 0.8);
+            backdrop-filter: blur(14px);
+            border: 1px solid rgba(45, 212, 191, 0.15);
+            border-radius: 1.5rem;
+        }
+
+        /* Text gradient */
+        .text-gradient-cyber {
+            background: linear-gradient(125deg, #b9f5f0, #2dd4bf, #5eead4);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        /* Buttons */
+        .btn-primary {
+            background: linear-gradient(105deg, #0b2622, #021010);
+            border: 1px solid #2dd4bf;
+            border-radius: 40px;
+            padding: 10px 24px;
+            font-weight: 600;
+            transition: all 0.2s ease;
+            cursor: pointer;
+        }
+
+        .btn-primary:hover {
+            background: #0c1919;
+            transform: scale(1.02);
+            box-shadow: 0 0 14px rgba(45, 212, 191, 0.4);
+        }
+
+        /* Pair session card */
+        .pair-card {
+            background: linear-gradient(135deg, rgba(45,212,191,0.1), rgba(20,184,166,0.05));
+            border: 2px solid rgba(45,212,191,0.3);
+            border-radius: 2rem;
+            transition: all 0.3s ease;
+        }
+
+        .pair-card:hover {
+            border-color: #2dd4bf;
+            box-shadow: 0 0 30px rgba(45,212,191,0.2);
+            transform: scale(1.02);
+        }
+
+        /* Video card */
+        .video-card {
+            background: rgba(5, 5, 10, 0.7);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(45, 212, 191, 0.15);
+            border-radius: 1.5rem;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .video-card:hover {
+            transform: translateY(-8px);
+            border-color: #2dd4bf;
+            box-shadow: 0 20px 35px -12px rgba(45, 212, 191, 0.25);
+        }
+
+        .video-thumbnail {
+            height: 180px;
+            background: linear-gradient(135deg, #0b2622, #021010);
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .play-icon {
+            width: 60px;
+            height: 60px;
+            background: rgba(45,212,191,0.9);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .video-card:hover .play-icon {
+            transform: scale(1.1);
+            background: #2dd4bf;
+        }
+
+        /* Category tabs */
+        .category-tab {
+            background: transparent;
+            border: 1px solid rgba(45,212,191,0.3);
+            border-radius: 40px;
+            padding: 8px 20px;
+            font-size: 0.85rem;
+            transition: all 0.2s ease;
+            cursor: pointer;
+        }
+
+        .category-tab.active {
+            background: linear-gradient(105deg, #0b2622, #021010);
+            border-color: #2dd4bf;
+            color: #2dd4bf;
+        }
+
+        .category-tab:hover {
+            border-color: #2dd4bf;
+            transform: translateY(-2px);
+        }
+
+        /* Search input */
+        .search-input {
+            background: #030405;
+            border: 1px solid #2c3e3a;
+            border-radius: 60px;
+            padding: 14px 20px 14px 50px;
+            color: #e2e8f0;
+            font-size: 0.9rem;
+            transition: 0.2s;
+            width: 100%;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: #2dd4bf;
+            box-shadow: 0 0 0 3px rgba(45, 212, 191, 0.25);
+        }
+
+        /* Ambient blobs */
+        .ambient-blob {
+            position: fixed;
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, rgba(45,212,191,0.08), transparent);
+            border-radius: 50%;
+            filter: blur(100px);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* Loading */
+        .loading-spinner {
+            position: fixed;
+            inset: 0;
+            background: #000000dd;
+            backdrop-filter: blur(24px);
+            z-index: 200;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: opacity 0.5s ease, visibility 0.5s;
+            visibility: hidden;
+            opacity: 0;
+        }
+
+        .loading-spinner.active {
+            visibility: visible;
+            opacity: 1;
+        }
+
+        .triple-ring {
+            position: relative;
+            width: 85px;
+            height: 85px;
+        }
+        .triple-ring .ring {
+            position: absolute;
+            border-radius: 50%;
+            border: 2.5px solid transparent;
+            animation: spinQuantum 1.4s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+        }
+        .triple-ring .ring:nth-child(1) {
+            width: 100%;
+            height: 100%;
+            border-top-color: #2dd4bf;
+            animation-duration: 1.2s;
+        }
+        .triple-ring .ring:nth-child(2) {
+            width: 70%;
+            height: 70%;
+            top: 15%;
+            left: 15%;
+            border-top-color: #14b8a6;
+            animation-duration: 1.6s;
+            animation-direction: reverse;
+        }
+        .triple-ring .ring:nth-child(3) {
+            width: 40%;
+            height: 40%;
+            top: 30%;
+            left: 30%;
+            border-top-color: #5eead4;
+            animation-duration: 0.9s;
+        }
+        @keyframes spinQuantum {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body class="bg-black">
+
+    <!-- Ambient blobs -->
+    <div class="ambient-blob -top-40 -left-40"></div>
+    <div class="ambient-blob bottom-0 right-0" style="background: radial-gradient(circle, rgba(20,184,166,0.06), transparent);"></div>
+
+    <!-- Loading Spinner -->
+    <div id="loadingSpinner" class="loading-spinner">
+        <div class="text-center">
+            <div class="flex justify-center mb-6">
+                <div class="triple-ring">
+                    <div class="ring"></div>
+                    <div class="ring"></div>
+                    <div class="ring"></div>
+                </div>
             </div>
-            <div class="bg-gray-800 rounded-xl p-6 hover:scale-105 transition-transform">
-                <div class="text-purple-400 text-4xl mb-3">🖥️</div>
-                <h3 class="text-xl font-bold mb-2">How to Get Unlimited VPS Server</h3>
-                <a href="#" class="text-purple-400 hover:underline">Watch on YouTube →</a>
-            </div>
-            <div class="bg-gray-800 rounded-xl p-6 hover:scale-105 transition-transform">
-                <div class="text-purple-400 text-4xl mb-3">⚙️</div>
-                <h3 class="text-xl font-bold mb-2">How to Create VPS Server & Deploy</h3>
-                <a href="#" class="text-purple-400 hover:underline">Watch on YouTube →</a>
-            </div>
-            <div class="bg-gray-800 rounded-xl p-6 hover:scale-105 transition-transform">
-                <div class="text-purple-400 text-4xl mb-3">📱</div>
-                <h3 class="text-xl font-bold mb-2">BWM XMD Pro App Download Guide</h3>
-                <a href="#" class="text-purple-400 hover:underline">Watch on YouTube →</a>
-            </div>
-            <div class="bg-gray-800 rounded-xl p-6 hover:scale-105 transition-transform">
-                <div class="text-purple-400 text-4xl mb-3">🔗</div>
-                <h3 class="text-xl font-bold mb-2">How to Pair WhatsApp Bot</h3>
-                <a href="#" class="text-purple-400 hover:underline">Watch on YouTube →</a>
-            </div>
-            <div class="bg-gray-800 rounded-xl p-6 hover:scale-105 transition-transform">
-                <div class="text-purple-400 text-4xl mb-3">🎓</div>
-                <h3 class="text-xl font-bold mb-2">More Tutorials by Brian Malone</h3>
-                <a href="#" class="text-purple-400 hover:underline">Watch on YouTube →</a>
-            </div>
+            <h3 class="text-xl font-bold text-gradient-cyber">Loading Tutorials...</h3>
         </div>
     </div>
+
+    <!-- Main Content -->
+    <div class="relative z-10">
+        
+        <!-- Navbar -->
+        <nav class="sticky top-0 z-50 bg-black/80 backdrop-blur-xl border-b border-white/5">
+            <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+                <div class="flex items-center gap-3">
+                    <div class="w-9 h-9 rounded-full border border-teal-400 shadow-md flex items-center justify-center bg-black">
+                        <i class="fas fa-crown text-teal-400 text-lg"></i>
+                    </div>
+                    <span class="text-xl font-black text-gradient-cyber tracking-tight">Loft XMD Hosting</span>
+                </div>
+                <div class="hidden md:flex items-center gap-7">
+                    <a href="index.html" class="text-gray-300 text-sm font-medium hover:text-teal-300 transition"><i class="fas fa-home"></i> Home</a>
+                    <a href="tutorials.html" class="text-teal-300 text-sm font-medium transition"><i class="fas fa-video"></i> Tutorials</a>
+                    <a href="pair-session.html" class="text-gray-300 text-sm hover:text-teal-300 transition"><i class="fas fa-link"></i> Pair Session</a>
+                    <a href="login.html" class="btn-primary text-white px-5 py-2 text-sm flex gap-2"><i class="fas fa-sign-in-alt"></i> Login</a>
+                </div>
+                <button id="mobileTrigger" class="md:hidden text-gray-300 text-xl"><i class="fas fa-bars"></i></button>
+            </div>
+        </nav>
+
+        <!-- Mobile Drawer -->
+        <div id="mobileDrawer" class="fixed top-0 left-0 h-full w-72 bg-black/95 backdrop-blur-2xl border-r border-white/10 z-50 transform -translate-x-full transition-transform duration-300 ease-out">
+            <div class="p-5 flex justify-between items-center border-b border-white/10">
+                <span class="font-bold text-teal-300">Loft XMD</span>
+                <button id="closeDrawerBtn" class="text-gray-400 text-xl"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="p-5 flex flex-col gap-5">
+                <a href="index.html" class="text-gray-300 hover:text-teal-300"><i class="fas fa-home w-6"></i> Home</a>
+                <a href="tutorials.html" class="text-teal-300"><i class="fas fa-video w-6"></i> Tutorials</a>
+                <a href="pair-session.html" class="text-gray-300 hover:text-teal-300"><i class="fas fa-link w-6"></i> Pair Session</a>
+                <a href="login.html" class="text-gray-300 hover:text-teal-300"><i class="fas fa-sign-in-alt w-6"></i> Login</a>
+                <a href="register.html" class="text-gray-300 hover:text-teal-300"><i class="fas fa-user-plus w-6"></i> Register</a>
+            </div>
+        </div>
+
+        <!-- Hero Section -->
+        <section class="pt-32 pb-12 text-center">
+            <div class="container mx-auto px-6">
+                <div class="inline-flex mb-4 bg-teal-500/10 rounded-full px-4 py-1 border border-teal-500/30">
+                    <i class="fas fa-graduation-cap text-teal-400 text-sm mr-2"></i>
+                    <span class="text-xs text-teal-300 tracking-wider">LEARNING CENTER</span>
+                </div>
+                <h1 class="text-4xl md:text-5xl font-bold mb-4">
+                    <span class="text-gradient-cyber">Video Tutorials</span>
+                </h1>
+                <p class="text-gray-400 max-w-2xl mx-auto">
+                    Step-by-step guides to deploy, manage, and optimize your WhatsApp bots
+                </p>
+            </div>
+        </section>
+
+        <!-- Pair Session Banner -->
+        <div class="container mx-auto px-6 mb-12">
+            <div class="pair-card p-6 md:p-8">
+                <div class="flex flex-col md:flex-row items-center justify-between gap-6">
+                    <div class="flex items-center gap-4">
+                        <div class="w-16 h-16 rounded-full bg-teal-500/20 flex items-center justify-center border-2 border-teal-400">
+                            <i class="fas fa-link text-2xl text-teal-400"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-bold text-teal-300">Pair Session</h3>
+                            <p class="text-gray-400 text-sm">Connect your WhatsApp device instantly using pair code</p>
+                        </div>
+                    </div>
+                    <div class="flex gap-3">
+                        <button onclick="startPairSession()" class="btn-primary px-6 py-3 flex items-center gap-2">
+                            <i class="fas fa-mobile-alt"></i> Start Pairing
+                        </button>
+                        <button onclick="showQRSession()" class="btn-primary px-6 py-3 flex items-center gap-2" style="background: transparent;">
+                            <i class="fas fa-qrcode"></i> QR Code
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Search and Categories -->
+        <div class="container mx-auto px-6 mb-10">
+            <div class="flex flex-col md:flex-row gap-4 justify-between items-center">
+                <div class="relative w-full md:w-96">
+                    <i class="fas fa-search absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-500"></i>
+                    <input type="text" id="searchInput" class="search-input" placeholder="Search tutorials...">
+                </div>
+                <div class="flex flex-wrap gap-2 justify-center">
+                    <button class="category-tab active" data-category="all">All</button>
+                    <button class="category-tab" data-category="deployment">Deployment</button>
+                    <button class="category-tab" data-category="pairing">Pairing</button>
+                    <button class="category-tab" data-category="vps">VPS & Servers</button>
+                    <button class="category-tab" data-category="basics">Basics</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tutorials Grid -->
+        <div class="container mx-auto px-6 pb-16">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="tutorialsGrid">
+                <!-- Tutorials will be loaded via JavaScript -->
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="py-12 px-5 border-t border-white/5 bg-black/60">
+            <div class="max-w-6xl mx-auto flex flex-col md:flex-row justify-between gap-8">
+                <div>
+                    <div class="w-10 h-10 rounded-full border border-teal-400 flex items-center justify-center mb-3">
+                        <i class="fas fa-crown text-teal-400 text-lg"></i>
+                    </div>
+                    <p class="text-gray-500 text-xs">© <span id="currentYear"></span> Loft XMD Hosting — premium bot hosting.</p>
+                </div>
+                <div class="grid grid-cols-2 gap-8 text-sm">
+                    <div>
+                        <h4 class="text-white text-xs uppercase tracking-wider mb-3">Explore</h4>
+                        <ul class="space-y-2">
+                            <li><a href="index.html" class="text-gray-400 hover:text-teal-300">Home</a></li>
+                            <li><a href="tutorials.html" class="text-gray-400 hover:text-teal-300">Tutorials</a></li>
+                            <li><a href="pair-session.html" class="text-gray-400 hover:text-teal-300">Pair Session</a></li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h4 class="text-white text-xs uppercase tracking-wider mb-3">Account</h4>
+                        <ul class="space-y-2">
+                            <li><a href="login.html" class="text-gray-400 hover:text-teal-300">Login</a></li>
+                            <li><a href="register.html" class="text-gray-400 hover:text-teal-300">Register</a></li>
+                            <li><a href="dashboard.html" class="text-gray-400 hover:text-teal-300">Dashboard</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        // Tutorials data - No BWM references
+        const tutorials = [
+            {
+                title: "How to Deploy WhatsApp Bot",
+                description: "Complete guide to deploy your WhatsApp bot on Loft XMD Hosting",
+                category: "deployment",
+                icon: "fa-rocket",
+                duration: "12:34",
+                youtubeUrl: "https://youtu.be/example1"
+            },
+            {
+                title: "Pair Session Setup Guide",
+                description: "Learn how to connect your WhatsApp device using pair code",
+                category: "pairing",
+                icon: "fa-link",
+                duration: "08:22",
+                youtubeUrl: "https://youtu.be/example2"
+            },
+            {
+                title: "How to Create and Configure VPS",
+                description: "Step-by-step VPS setup for optimal bot performance",
+                category: "vps",
+                icon: "fa-server",
+                duration: "15:47",
+                youtubeUrl: "https://youtu.be/example3"
+            },
+            {
+                title: "QR Code Authentication",
+                description: "Connect your WhatsApp bot using QR code scanning",
+                category: "pairing",
+                icon: "fa-qrcode",
+                duration: "06:15",
+                youtubeUrl: "https://youtu.be/example4"
+            },
+            {
+                title: "Bot Management Dashboard",
+                description: "How to manage and monitor your bots from dashboard",
+                category: "basics",
+                icon: "fa-chart-line",
+                duration: "10:03",
+                youtubeUrl: "https://youtu.be/example5"
+            },
+            {
+                title: "VPS Deployment Tutorial",
+                description: "Deploy your WhatsApp bot on any VPS server",
+                category: "vps",
+                icon: "fa-cloud-upload-alt",
+                duration: "18:30",
+                youtubeUrl: "https://youtu.be/example6"
+            },
+            {
+                title: "Bot Configuration & Settings",
+                description: "Customize your bot commands and features",
+                category: "basics",
+                icon: "fa-sliders-h",
+                duration: "14:22",
+                youtubeUrl: "https://youtu.be/example7"
+            },
+            {
+                title: "24/7 Hosting Setup",
+                description: "Ensure your bot runs 24/7 without interruptions",
+                category: "deployment",
+                icon: "fa-clock",
+                duration: "09:45",
+                youtubeUrl: "https://youtu.be/example8"
+            },
+            {
+                title: "Multiple Device Pairing",
+                description: "Connect multiple WhatsApp devices to one bot",
+                category: "pairing",
+                icon: "fa-mobile-alt",
+                duration: "11:18",
+                youtubeUrl: "https://youtu.be/example9"
+            }
+        ];
+
+        let currentCategory = "all";
+        let searchTerm = "";
+
+        function showLoading(show) {
+            const spinner = document.getElementById('loadingSpinner');
+            if (show) {
+                spinner.classList.add('active');
+            } else {
+                spinner.classList.remove('active');
+            }
+        }
+
+        function renderTutorials() {
+            const grid = document.getElementById('tutorialsGrid');
+            const filtered = tutorials.filter(tutorial => {
+                const matchesCategory = currentCategory === "all" || tutorial.category === currentCategory;
+                const matchesSearch = tutorial.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                                     tutorial.description.toLowerCase().includes(searchTerm.toLowerCase());
+                return matchesCategory && matchesSearch;
+            });
+
+            if (filtered.length === 0) {
+                grid.innerHTML = `
+                    <div class="glass-card p-12 text-center col-span-full">
+                        <i class="fas fa-search text-4xl text-gray-500 mb-3"></i>
+                        <p class="text-gray-400">No tutorials found matching your search</p>
+                        <button onclick="resetSearch()" class="btn-primary mt-4 py-2 px-4 text-sm">Clear Search</button>
+                    </div>
+                `;
+                return;
+            }
+
+            grid.innerHTML = filtered.map(tutorial => `
+                <div class="video-card" onclick="openTutorial('${tutorial.youtubeUrl}')">
+                    <div class="video-thumbnail">
+                        <div class="play-icon">
+                            <i class="fas fa-play text-black text-xl ml-1"></i>
+                        </div>
+                    </div>
+                    <div class="p-5">
+                        <div class="flex justify-between items-start mb-3">
+                            <div class="w-10 h-10 rounded-full bg-teal-500/20 flex items-center justify-center">
+                                <i class="fas ${tutorial.icon} text-teal-400"></i>
+                            </div>
+                            <span class="text-xs text-gray-500">${tutorial.duration}</span>
+                        </div>
+                        <h3 class="font-bold text-lg mb-2">${tutorial.title}</h3>
+                        <p class="text-gray-400 text-sm mb-4">${tutorial.description}</p>
+                        <div class="flex justify-between items-center">
+                            <span class="text-xs text-teal-400 uppercase tracking-wider">${tutorial.category}</span>
+                            <span class="text-gray-500 text-sm">
+                                <i class="fab fa-youtube text-red-400 mr-1"></i> Watch
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function openTutorial(url) {
+            window.open(url, '_blank');
+        }
+
+        function startPairSession() {
+            showLoading(true);
+            setTimeout(() => {
+                showLoading(false);
+                window.location.href = 'pair-session.html';
+            }, 500);
+        }
+
+        function showQRSession() {
+            showLoading(true);
+            setTimeout(() => {
+                showLoading(false);
+                alert('QR Code feature coming soon! Use Pair Session for now.');
+            }, 500);
+        }
+
+        function resetSearch() {
+            searchTerm = "";
+            document.getElementById('searchInput').value = "";
+            renderTutorials();
+        }
+
+        // Event listeners
+        document.getElementById('searchInput').addEventListener('input', (e) => {
+            searchTerm = e.target.value;
+            renderTutorials();
+        });
+
+        document.querySelectorAll('.category-tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                document.querySelectorAll('.category-tab').forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+                currentCategory = tab.dataset.category;
+                renderTutorials();
+            });
+        });
+
+        // Mobile drawer
+        const mobileTrigger = document.getElementById('mobileTrigger');
+        const drawer = document.getElementById('mobileDrawer');
+        const closeDrawer = document.getElementById('closeDrawerBtn');
+        
+        if (mobileTrigger) {
+            mobileTrigger.onclick = () => drawer.style.transform = 'translateX(0)';
+            closeDrawer.onclick = () => drawer.style.transform = 'translateX(-100%)';
+            document.addEventListener('click', (e) => {
+                if (drawer && !drawer.contains(e.target) && !mobileTrigger.contains(e.target) && drawer.style.transform === 'translateX(0px)') {
+                    drawer.style.transform = 'translateX(-100%)';
+                }
+            });
+        }
+
+        document.getElementById('currentYear').innerText = new Date().getFullYear();
+
+        // Initial render
+        renderTutorials();
+
+        // Hide loading after page load
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                showLoading(false);
+            }, 500);
+        });
+    </script>
 </body>
 </html>
