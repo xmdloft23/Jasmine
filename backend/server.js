@@ -16,7 +16,9 @@ app.use(express.json());
 const adminRoutes = require('./routes/admin.js');
 const authRoutes = require('./routes/auth');
 const planRoutes = require('./routes/plans');
+const paymentRoutes = require('./routes/payment');
 
+app.use('/api/payment', paymentRoutes);
 app.use('/api/auth', authRoutes);
 app.use('/api/plans', planRoutes);
 app.use('/api/admin', adminRoutes);
