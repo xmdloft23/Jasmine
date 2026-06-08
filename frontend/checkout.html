@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <title>Checkout - Loft XMD Hosting</title>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #000000;
+            font-family: 'Space Grotesk', sans-serif;
+            color: #edf2f8;
+            overflow-x: hidden;
+        }
+
+        .glass-card {
+            background: rgba(5, 5, 10, 0.75);
+            backdrop-filter: blur(14px);
+            border: 1px solid rgba(45, 212, 191, 0.2);
+            border-radius: 2rem;
+            transition: all 0.3s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+        }
+
+        .glass-card:hover {
+            border-color: rgba(45, 212, 191, 0.5);
+            box-shadow: 0 20px 35px -12px rgba(45, 212, 191, 0.15);
+        }
+
+        .text-gradient-cyber {
+            background: linear-gradient(125deg, #b9f5f0, #2dd4bf, #5eead4);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .btn-primary {
+            background: linear-gradient(105deg, #0b2622, #021010);
+            border: 1px solid #2dd4bf;
+            border-radius: 40px;
+            padding: 14px 24px;
+            font-weight: 600;
+            transition: all 0.2s ease;
+            cursor: pointer;
+        }
+
+        .btn-primary:hover {
+            background: #0c1919;
+            transform: scale(1.02);
+            box-shadow: 0 0 14px rgba(45, 212, 191, 0.4);
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 1.5px solid rgba(45, 212, 191, 0.5);
+            border-radius: 40px;
+            padding: 12px 20px;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            cursor: pointer;
+        }
+
+        .btn-outline.selected {
+            border-color: #2dd4bf;
+            background: rgba(45, 212, 191, 0.15);
+            box-shadow: 0 0 10px rgba(45, 212, 191, 0.3);
+        }
+
+        .input-dark {
+            background: #030405;
+            border: 1px solid #2c3e3a;
+            border-radius: 60px;
+            padding: 14px 20px;
+            color: #e2e8f0;
+            font-size: 0.9rem;
+            transition: 0.2s;
+            width: 100%;
+        }
+
+        .input-dark:focus {
+            outline: none;
+            border-color: #2dd4bf;
+            box-shadow: 0 0 0 3px rgba(45, 212, 191, 0.25);
+        }
+
+        /* Loading spinner */
+        .loading-overlay {
+            position: fixed;
+            inset: 0;
+            background: #000000dd;
+            backdrop-filter: blur(24px);
+            z-index: 200;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: opacity 0.5s ease, visibility 0.5s;
+            visibility: hidden;
+            opacity: 0;
+        }
+
+        .loading-overlay.active {
+            visibility: visible;
+            opacity: 1;
+        }
+
+        .triple-ring {
+            position: relative;
+            width: 85px;
+            height: 85px;
+        }
+        .triple-ring .ring {
+            position: absolute;
+            border-radius: 50%;
+            border: 2.5px solid transparent;
+            animation: spinQuantum 1.4s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+        }
+        .triple-ring .ring:nth-child(1) {
+            width: 100%;
+            height: 100%;
+            border-top-color: #2dd4bf;
+            animation-duration: 1.2s;
+        }
+        .triple-ring .ring:nth-child(2) {
+            width: 70%;
+            height: 70%;
+            top: 15%;
+            left: 15%;
+            border-top-color: #14b8a6;
+            animation-duration: 1.6s;
+            animation-direction: reverse;
+        }
+        .triple-ring .ring:nth-child(3) {
+            width: 40%;
+            height: 40%;
+            top: 30%;
+            left: 30%;
+            border-top-color: #5eead4;
+            animation-duration: 0.9s;
+        }
+        @keyframes spinQuantum {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .payment-method {
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .ambient-blob {
+            position: fixed;
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, rgba(45,212,191,0.08), transparent);
+            border-radius: 50%;
+            filter: blur(100px);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* Success animation */
+        @keyframes checkmark {
+            0% { transform: scale(0); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+    </style>
+</head>
+<body class="bg-black">
+
+    <div class="ambient-blob -top-40 -left-40"></div>
+    <div class="ambient-blob bottom-0 right-0" style="background: radial-gradient(circle, rgba(20,184,166,0.06), transparent);"></div>
+
+    <!-- Loading Overlay -->
+    <div id="loadingOverlay" class="loading-overlay">
+        <div class="text-center">
+            <div class="flex justify-center mb-6">
+                <div class="triple-ring">
+                    <div class="ring"></div>
+                    <div class="ring"></div>
+                    <div class="ring"></div>
+                </div>
+            </div>
+            <h3 id="loadingTitle" class="text-xl font-bold text-gradient-cyber">Processing Payment...</h3>
+            <p id="loadingMessage" class="text-gray-400 text-sm mt-2">Please wait</p>
+        </div>
+    </div>
+
+    <!-- Modal for STK Push Prompt -->
+    <div id="stkModal" class="fixed inset-0 bg-black/90 backdrop-blur-md z-50 flex items-center justify-center hidden">
+        <div class="bg-gradient-to-br from-gray-900 to-black rounded-2xl p-8 max-w-md w-full mx-4 border border-teal-500/30">
+            <div class="text-center">
+                <div class="w-20 h-20 rounded-full bg-teal-500/20 flex items-center justify-center mx-auto mb-4">
+                    <i class="fas fa-mobile-alt text-3xl text-teal-400 animate-pulse"></i>
+                </div>
+                <h3 class="text-2xl font-bold text-teal-400">STK Push Sent! 📱</h3>
+                <p class="text-gray-300 mt-3" id="stkPhoneNumber">Check your phone</p>
+                <p class="text-gray-400 text-sm mt-2">Enter your PIN on the prompt to complete payment</p>
+                <div class="mt-6 p-4 bg-gray-800/50 rounded-xl">
+                    <i class="fas fa-info-circle text-teal-400 mr-2"></i>
+                    <span class="text-sm text-gray-300">Payment is being processed...</span>
+                </div>
+                <div class="mt-6 w-full bg-gray-700 rounded-full h-1.5">
+                    <div id="progressBar" class="bg-teal-400 h-1.5 rounded-full transition-all duration-500" style="width: 0%"></div>
+                </div>
+                <button onclick="closeSTKModal()" class="mt-6 text-gray-500 text-sm hover:text-gray-300">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="min-h-screen py-8 px-5 relative z-10">
+        <div class="container mx-auto max-w-5xl">
+            
+            <!-- Header -->
+            <div class="text-center mb-8">
+                <a href="index.html" class="text-gray-400 text-sm hover:text-teal-400 transition inline-flex items-center gap-2 mb-4">
+                    <i class="fas fa-arrow-left"></i> Back to Plans
+                </a>
+                <div class="w-16 h-16 rounded-full border-2 border-teal-400 flex items-center justify-center mx-auto mb-3 bg-black/50">
+                    <i class="fab fa-flutterwave text-2xl text-teal-400"></i>
+                </div>
+                <h1 class="text-3xl font-bold text-gradient-cyber">Secure Checkout</h1>
+                <p class="text-gray-400 text-sm mt-2">Powered by Flutterwave · Instant STK Push</p>
+            </div>
+
+            <div class="flex flex-col lg:flex-row gap-6">
+                
+                <!-- LEFT: Order Summary -->
+                <div class="flex-1">
+                    <div class="glass-card p-6">
+                        <h2 class="text-xl font-bold mb-4 flex items-center gap-2">
+                            <i class="fas fa-shopping-cart text-teal-400"></i> Order Summary
+                        </h2>
+                        
+                        <div class="space-y-4">
+                            <div class="flex justify-between items-center py-3 border-b border-gray-700">
+                                <span class="text-gray-400">Selected Plan</span>
+                                <span class="font-bold text-teal-400" id="planName">Loading...</span>
+                            </div>
+                            <div class="flex justify-between items-center py-3 border-b border-gray-700">
+                                <span class="text-gray-400">Duration</span>
+                                <span class="font-bold" id="planDuration">Loading...</span>
+                            </div>
+                            <div class="flex justify-between items-center py-3 border-b border-gray-700">
+                                <span class="text-gray-400">Amount (TZS)</span>
+                                <span class="text-2xl font-bold text-teal-400" id="planPrice">0 TZS</span>
+                            </div>
+                            <div class="flex justify-between items-center py-3">
+                                <span class="text-gray-400">Transaction Fee</span>
+                                <span class="text-green-400" id="feeAmount">Free</span>
+                            </div>
+                        </div>
+                        
+                        <div class="mt-6 p-3 bg-teal-500/10 rounded-xl border border-teal-500/20">
+                            <div class="flex items-center gap-2 text-xs text-gray-300">
+                                <i class="fas fa-shield-alt text-teal-400"></i>
+                                <span>PCI-DSS compliant · 256-bit SSL encryption</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- RIGHT: Payment Methods -->
+                <div class="flex-1">
+                    <div class="glass-card p-6">
+                        <h2 class="text-xl font-bold mb-4 flex items-center gap-2">
+                            <i class="fas fa-wallet text-teal-400"></i> Select Payment Method
+                        </h2>
+                        
+                        <!-- Payment Methods Grid -->
+                        <div class="grid grid-cols-2 gap-3 mb-6">
+                            <!-- M-Pesa -->
+                            <div id="mpesaMethod" class="payment-method p-4 rounded-xl border border-gray-700 text-center" onclick="selectPayment('mpesa')">
+                                <i class="fas fa-mobile-alt text-2xl text-green-400"></i>
+                                <p class="font-medium text-sm mt-2">M-Pesa</p>
+                                <div class="w-3 h-3 rounded-full mx-auto mt-2 border border-gray-500" id="mpesaRadio"></div>
+                            </div>
+                            
+                            <!-- Tigo Pesa -->
+                            <div id="tigoMethod" class="payment-method p-4 rounded-xl border border-gray-700 text-center" onclick="selectPayment('tigo')">
+                                <i class="fas fa-money-bill-wave text-2xl text-yellow-400"></i>
+                                <p class="font-medium text-sm mt-2">Tigo Pesa</p>
+                                <div class="w-3 h-3 rounded-full mx-auto mt-2 border border-gray-500" id="tigoRadio"></div>
+                            </div>
+                            
+                            <!-- Airtel Money -->
+                            <div id="airtelMethod" class="payment-method p-4 rounded-xl border border-gray-700 text-center" onclick="selectPayment('airtel')">
+                                <i class="fas fa-sim-card text-2xl text-red-400"></i>
+                                <p class="font-medium text-sm mt-2">Airtel Money</p>
+                                <div class="w-3 h-3 rounded-full mx-auto mt-2 border border-gray-500" id="airtelRadio"></div>
+                            </div>
+                            
+                            <!-- Halopesa -->
+                            <div id="halopesaMethod" class="payment-method p-4 rounded-xl border border-gray-700 text-center" onclick="selectPayment('halopesa')">
+                                <i class="fas fa-wifi text-2xl text-blue-400"></i>
+                                <p class="font-medium text-sm mt-2">Halopesa</p>
+                                <div class="w-3 h-3 rounded-full mx-auto mt-2 border border-gray-500" id="halopesaRadio"></div>
+                            </div>
+                        </div>
+
+                        <!-- Phone Number Input -->
+                        <div id="phoneInput" class="mb-6 hidden">
+                            <label class="block mb-2 text-sm font-medium text-gray-300">
+                                <i class="fas fa-phone-alt mr-1 text-teal-400"></i> Phone Number
+                            </label>
+                            <div class="relative">
+                                <div class="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-500 text-sm">
+                                    <span class="font-mono">+255</span>
+                                </div>
+                                <input type="tel" id="phoneNumber" class="input-dark pl-16" placeholder="712345678" autocomplete="off">
+                            </div>
+                            <p class="text-xs text-gray-500 mt-2">
+                                <i class="fas fa-info-circle"></i> You will receive a prompt to enter your PIN
+                            </p>
+                        </div>
+
+                        <!-- Pay Button -->
+                        <button id="payButton" onclick="processPayment()" class="btn-primary w-full py-3 text-white font-semibold flex items-center justify-center gap-2 opacity-50 cursor-not-allowed" disabled>
+                            <i class="fas fa-lock"></i> Select Payment Method
+                        </button>
+
+                        <!-- Security Badges -->
+                        <div class="flex flex-wrap justify-center gap-4 mt-6 pt-4 border-t border-gray-700">
+                            <div class="flex items-center gap-1 text-xs text-gray-500">
+                                <i class="fab fa-flutterwave text-teal-400"></i> Flutterwave
+                            </div>
+                            <div class="flex items-center gap-1 text-xs text-gray-500">
+                                <i class="fas fa-shield-alt text-teal-400"></i> Secured
+                            </div>
+                            <div class="flex items-center gap-1 text-xs text-gray-500">
+                                <i class="fas fa-clock text-teal-400"></i> Instant
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Trust Signals -->
+            <div class="text-center mt-8">
+                <div class="flex flex-wrap justify-center gap-6 text-gray-500 text-xs">
+                    <span><i class="fas fa-check-circle text-teal-400"></i> PCI DSS Level 1</span>
+                    <span><i class="fas fa-check-circle text-teal-400"></i> 3D Secure</span>
+                    <span><i class="fas fa-check-circle text-teal-400"></i> Fraud Protection</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = 'https://jasmine-ebjp.onrender.com/api';
+        let selectedPayment = null;
+        let paymentCheckInterval = null;
+        
+        // Check authentication
+        const token = localStorage.getItem('token');
+        if (!token) {
+            window.location.href = 'login.html';
+        }
+        
+        // Get selected plan from localStorage
+        const selectedPlan = localStorage.getItem('selectedPlan');
+        if (!selectedPlan) {
+            window.location.href = 'index.html';
+        }
+        
+        // Plan details
+        const planDetails = {
+            '10days': { name: 'Starter Plan', duration: '10 days', price: 20, tzs: 20 },
+            '35days': { name: 'Basic Plan', duration: '35 days', price: 45, tzs: 45 },
+            '2months': { name: 'Pro Plan', duration: '2 months', price: 100, tzs: 100 },
+            '3months': { name: 'Business Plan', duration: '3 months', price: 150, tzs: 150 },
+            '6months': { name: 'Enterprise Plan', duration: '6 months', price: 300, tzs: 300 },
+            '1year': { name: 'Ultimate Plan', duration: '1 year', price: 600, tzs: 600 }
+        };
+        
+        // Update order summary
+        const plan = planDetails[selectedPlan];
+        document.getElementById('planName').innerText = plan.name;
+        document.getElementById('planDuration').innerText = plan.duration;
+        document.getElementById('planPrice').innerText = plan.tzs.toLocaleString() + ' TZS';
+        
+        function selectPayment(method) {
+            selectedPayment = method;
+            
+            // Reset all payment methods
+            const methods = ['mpesa', 'tigo', 'airtel', 'halopesa'];
+            methods.forEach(m => {
+                const element = document.getElementById(`${m}Method`);
+                const radio = document.getElementById(`${m}Radio`);
+                element.classList.remove('selected');
+                element.classList.remove('border-teal-400');
+                element.classList.add('border-gray-700');
+                radio.classList.remove('bg-teal-400');
+                radio.classList.add('border-gray-500');
+            });
+            
+            // Highlight selected
+            const selectedElement = document.getElementById(`${method}Method`);
+            const selectedRadio = document.getElementById(`${method}Radio`);
+            selectedElement.classList.add('selected');
+            selectedElement.classList.add('border-teal-400');
+            selectedElement.classList.remove('border-gray-700');
+            selectedRadio.classList.add('bg-teal-400');
+            selectedRadio.classList.remove('border-gray-500');
+            
+            // Show phone input
+            document.getElementById('phoneInput').classList.remove('hidden');
+            
+            // Enable pay button
+            const payBtn = document.getElementById('payButton');
+            payBtn.disabled = false;
+            payBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+            payBtn.innerHTML = `<i class="fas fa-mobile-alt"></i> Pay ${plan.tzs.toLocaleString()} TZS via ${method.toUpperCase()}`;
+        }
+        
+        function showLoading(show, title = 'Processing Payment...', message = 'Please wait') {
+            const overlay = document.getElementById('loadingOverlay');
+            if (show) {
+                document.getElementById('loadingTitle').innerText = title;
+                document.getElementById('loadingMessage').innerText = message;
+                overlay.classList.add('active');
+            } else {
+                overlay.classList.remove('active');
+            }
+        }
+        
+        function showSTKModal(phoneNumber, transactionRef) {
+            document.getElementById('stkPhoneNumber').innerHTML = `📱 Check your phone: <span class="text-teal-400">${phoneNumber}</span>`;
+            document.getElementById('stkModal').classList.remove('hidden');
+            
+            // Animate progress bar
+            let progress = 0;
+            const interval = setInterval(() => {
+                progress += 2;
+                document.getElementById('progressBar').style.width = progress + '%';
+                if (progress >= 100) clearInterval(interval);
+            }, 100);
+            
+            // Start checking payment status
+            startPaymentCheck(transactionRef);
+        }
+        
+        function closeSTKModal() {
+            document.getElementById('stkModal').classList.add('hidden');
+            if (paymentCheckInterval) {
+                clearInterval(paymentCheckInterval);
+            }
+        }
+        
+        function startPaymentCheck(transactionRef) {
+            let attempts = 0;
+            const maxAttempts = 30; // 5 minutes (10s * 30)
+            
+            paymentCheckInterval = setInterval(async () => {
+                attempts++;
+                
+                try {
+                    const response = await fetch(`${API_URL}/payment/verify/${transactionRef}`, {
+                        headers: { 'Authorization': `Bearer ${token}` }
+                    });
+                    const data = await response.json();
+                    
+                    if (data.success && data.status === 'completed') {
+                        clearInterval(paymentCheckInterval);
+                        closeSTKModal();
+                        showLoading(false);
+                        
+                        // Clear selected plan
+                        localStorage.removeItem('selectedPlan');
+                        localStorage.removeItem('selectedPrice');
+                        
+                        // Store payment info
+                        localStorage.setItem('lastPayment', JSON.stringify({
+                            plan: selectedPlan,
+                            planName: plan.name,
+                            amount: plan.tzs,
+                            method: selectedPayment,
+                            date: new Date().toISOString()
+                        }));
+                        
+                        // Show success and redirect
+                        alert('✅ Payment successful! Your plan has been activated.');
+                        window.location.href = 'dashboard.html';
+                    }
+                    
+                    if (attempts >= maxAttempts) {
+                        clearInterval(paymentCheckInterval);
+                        closeSTKModal();
+                        showLoading(false);
+                        alert('⏰ Payment timeout. Please try again or contact support.');
+                    }
+                } catch (err) {
+                    console.log('Checking status...');
+                }
+            }, 10000); // Check every 10 seconds
+        }
+        
+        async function processPayment() {
+            if (!selectedPayment) {
+                alert('Please select a payment method');
+                return;
+            }
+            
+            const phoneNumber = document.getElementById('phoneNumber').value;
+            if (!phoneNumber || phoneNumber.length < 9) {
+                alert('Please enter a valid phone number');
+                return;
+            }
+            
+            // Format phone number (remove leading zero)
+            let formattedPhone = phoneNumber.replace(/[^0-9]/g, '');
+            if (formattedPhone.startsWith('0')) {
+                formattedPhone = formattedPhone.substring(1);
+            }
+            
+            showLoading(true, 'Initiating Payment...', 'Contacting Flutterwave');
+            
+            try {
+                const response = await fetch(`${API_URL}/payment/initiate-mobile-money`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({
+                        plan: selectedPlan,
+                        phoneNumber: formattedPhone,
+                        network: selectedPayment
+                    })
+                });
+                
+                const data = await response.json();
+                console.log('Payment response:', data);
+                
+                if (data.success) {
+                    showLoading(false);
+                    showSTKModal(phoneNumber, data.transactionRef);
+                } else {
+                    showLoading(false);
+                    alert('❌ ' + data.message);
+                }
+            } catch (error) {
+                console.error('Payment error:', error);
+                showLoading(false);
+                alert('Payment failed: ' + error.message);
+            }
+        }
+        
+        // Enter key on phone number
+        document.getElementById('phoneNumber').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter' && selectedPayment) {
+                processPayment();
+            }
+        });
+    </script>
+</body>
+</html>
